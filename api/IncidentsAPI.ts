@@ -77,7 +77,7 @@ export class IncidentsAPI {
       return helper.slackOut(incidentsJson);
     }
     catch (error) {
-      return "Error!\nUpdate the incident: investigating -> identified -> monitoring -> resolved"
+      return "Error!\nUpdate the incident: investigating OR identified -> monitoring -> resolved"
     }
   }
 }
