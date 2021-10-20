@@ -25,7 +25,7 @@ const app = new App({
 
 const incidentapi = new IncidentsAPI(apiClient);
 
-app.message("getall", async ({ message, say }) => {
+app.message("getall", async ({ say }) => {
   try {
      say("List of all incidents:");
      say(await incidentapi.getAll());
@@ -35,35 +35,47 @@ app.message("getall", async ({ message, say }) => {
   }
 });
 
-app.message("getunresolved", async ({ message, say }) => {
+app.message("getunresolved", async ({ say }) => {
   try {
     say("List of unresolved incidents:");
     say(await incidentapi.getUnresolved() );
   } catch (error) {
-      console.log("err")
     console.error(error);
   }
 });
 
-app.message("createincident", async ({ message, say, event, payload }) => {
+app.message("createincident", async ({ message, say }) => {
+  const incidentName = JSON.parse(JSON.stringify(message))['text'].split(' ')[1];
+  const incidentText = JSON.parse(JSON.stringify(message))['text'].split(' ').slice(1).join(' ');
   try {
-    //say(await incidentapi.createIncident("test1", "investigating", "test1" ));
+    say(await incidentapi.
+      createIncident(incidentName, incidentText));
   } catch (error) {
-      console.log("err")
+    console.error(error);
+  }
+});
+
+app.message("updateincident", async ({ message, say }) => {
+  const incidentId = JSON.parse(JSON.stringify(message))['text'].split(' ')[1];
+  const incidentStatus = JSON.parse(JSON.stringify(message))['text'].split(' ')[2];
+  try {
+    say(await incidentapi.
+      updateIncident(incidentId, incidentStatus));
+  } catch (error) {
     console.error(error);
   }
 });
 
 
- app.event('test', async ({ event, context }) => {
-  console.log(event);
- });
+//  app.event('message', async ({ message }) => {
+//    console.log(JSON.parse(JSON.stringify(message))['text'].split(' ')[1]);
+//  });
 
-app.message("message", async ({ message, say }) => {
+app.message("help", async ({ say }) => {
   try {
-     say(incidentapi.helpMessage());
+    say(incidentapi.helpMessage());
   } catch (error) {
-      console.log("err")
+    console.log("err")
     console.error(error);
   }
 });

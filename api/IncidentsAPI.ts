@@ -14,10 +14,10 @@ export class IncidentsAPI {
    * Get a help message to indicate how interact with Slack bot
    */
   helpMessage() {
-    const getAll = 'getAll(): Get list of all incidents\n';
-    const getUnresolved = 'getUnresolved(): Get a list of unresolved incidents\n';
-    const createIncident = 'createIncident(name, status, body): Create an incident\n';
-    const updateIncident = 'updateIncident(incidentId, status): Update an incident status (identified -> investigating -> monitoring -> resolved)\n';
+    const getAll = 'getall: Get list of all incidents\n';
+    const getUnresolved = 'getunresolved: Get a list of unresolved incidents\n';
+    const createIncident = 'createincident name  body: Create an incident\n';
+    const updateIncident = 'updateincident incidentId status: Update an incident status (identified -> investigating -> monitoring -> resolved)\n';
     const helpMsg = helper.helpMessage(
       getAll         +
       getUnresolved  +
@@ -33,7 +33,7 @@ export class IncidentsAPI {
   public async getAll(): Promise<string> {
     const endpoint = "incidents";
     const incidentsJson = await this.apiClient.get(endpoint);
-    return helper.slackOut(incidentsJson);
+    return helper.slackOutList(incidentsJson);
   }
 
   /**
@@ -43,7 +43,7 @@ export class IncidentsAPI {
   public async getUnresolved(): Promise<string> {
     const endpoint = "incidents/unresolved";
     const incidentsJson = await this.apiClient.get(endpoint);
-    return helper.slackOut(incidentsJson);
+    return helper.slackOutList(incidentsJson);
   }
 
   /**
@@ -52,17 +52,16 @@ export class IncidentsAPI {
    * incidents status should be one of these values: investigating*, *identified*, *monitoring*
    * *resolved, *scheduled, *in_progress, *verifying or *completed".
    */
-  public async createIncident(name: string, status: string, body: string): Promise<string> {
+  public async createIncident(name: string, body: string): Promise<string> {
     const endpoint = "incidents";
 
     var dataString = qs.stringify({
       'incident[name]': name,
-      'incident[status]': status,
       'incident[body]': body
     });
 
-    const d = await this.apiClient.post(endpoint, dataString);
-    return JSON.stringify(d.data);
+    const incidentsJson = await this.apiClient.post(endpoint, dataString);
+    return helper.slackOut(incidentsJson);
   }
 
 
@@ -74,11 +73,11 @@ export class IncidentsAPI {
         'incident[status]': status
       });
 
-      const d = await this.apiClient.put(endpoint, dataString);
-      return JSON.stringify(d.data);
+      const incidentsJson = await this.apiClient.put(endpoint, dataString);
+      return helper.slackOut(incidentsJson);
     }
     catch (error) {
-      return "Error!\nUpdate the incident: identified -> investigating -> monitoring -> resolved"
+      return "Error!\nUpdate the incident: investigating -> identified -> monitoring -> resolved"
     }
   }
 }
