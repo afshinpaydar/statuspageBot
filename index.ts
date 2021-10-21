@@ -25,26 +25,31 @@ const app = new App({
 
 const incidentapi = new IncidentsAPI(apiClient);
 
-app.message("getall", async ({ say }) => {
+app.message("get_all", async ({ say }) => {
   try {
-     say("List of all incidents:");
      say(await incidentapi.getAll());
   } catch (error) {
-      console.log("err")
     console.error(error);
   }
 });
 
-app.message("getunresolved", async ({ say }) => {
+app.message("get_unresolved", async ({ say }) => {
   try {
-    say("List of unresolved incidents:");
     say(await incidentapi.getUnresolved() );
   } catch (error) {
     console.error(error);
   }
 });
 
-app.message("createincident", async ({ message, say }) => {
+app.message("get_templates", async ({ say }) => {
+  try {
+     say(await incidentapi.getTemplates());
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.message("create_incident", async ({ message, say }) => {
   const incidentName = JSON.parse(JSON.stringify(message))['text'].split(' ')[1];
   const incidentText = JSON.parse(JSON.stringify(message))['text'].split(' ').slice(1).join(' ');
   try {
@@ -55,7 +60,7 @@ app.message("createincident", async ({ message, say }) => {
   }
 });
 
-app.message("updateincident", async ({ message, say }) => {
+app.message("update_incident", async ({ message, say }) => {
   const incidentId = JSON.parse(JSON.stringify(message))['text'].split(' ')[1];
   const incidentStatus = JSON.parse(JSON.stringify(message))['text'].split(' ')[2];
   try {
@@ -67,15 +72,10 @@ app.message("updateincident", async ({ message, say }) => {
 });
 
 
-//  app.event('message', async ({ message }) => {
-//    console.log(JSON.parse(JSON.stringify(message))['text'].split(' ')[1]);
-//  });
-
 app.message("help", async ({ say }) => {
   try {
     say(incidentapi.helpMessage());
   } catch (error) {
-    console.log("err")
     console.error(error);
   }
 });

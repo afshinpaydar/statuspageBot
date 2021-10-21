@@ -11,12 +11,8 @@ export class helper {
         `${counter++}. NAME:${item.name}, ID:${item.id}, STATUS:${item.status}\n`;
     }
     incidentsString = slackCodeBlock+incidentsString+slackCodeBlock;
-    return incidentsString.toString();
-  }
 
-  static helpMessage(msg: string) {
-    const slackCodeBlock = "```";
-    return slackCodeBlock + msg + slackCodeBlock;
+    return incidentsString.toString();
   }
 
   static slackOut(item: AxiosResponse<any>) {
@@ -25,6 +21,14 @@ export class helper {
     incidentsString +=
         `NAME:${item.data.name}, ID:${item.data.id}, STATUS:${item.data.status}\n`;
     incidentsString = slackCodeBlock+incidentsString+slackCodeBlock;
+
     return incidentsString.toString();
+  }
+
+  static isEmpty(obj: AxiosResponse<any>) {
+    if(obj.data.length === 0) {
+      return true;
+    }
+    return false;
   }
 }

@@ -14,15 +14,17 @@ export class IncidentsAPI {
    * Get a help message to indicate how interact with Slack bot
    */
   helpMessage() {
-    const getAll = 'getall: Get list of all incidents\n';
-    const getUnresolved = 'getunresolved: Get a list of unresolved incidents\n';
-    const createIncident = 'createincident name  body: Create an incident\n';
-    const updateIncident = 'updateincident incidentId status: Update an incident status (investigating -> identified -> monitoring -> resolved)\n';
-    const helpMsg = helper.helpMessage(
+    const getAll = '`get_all: Get list of all incidents`\n';
+    const getUnresolved = '`get_unresolved: Get a list of unresolved incidents`\n';
+    const createIncident = '`create_incident <Name>  <Body>: Create an incident`\n';
+    const updateIncident = '`update_incident <incidentId> <status>: Update an incident status (investigating -> identified -> monitoring -> resolved)`\n';
+    const getTemplates = '`get_templates: Get a list of templates`\n';
+    const helpMsg =
       getAll         +
       getUnresolved  +
       createIncident +
-      updateIncident);
+      updateIncident +
+      getTemplates;
     return helpMsg;
   }
 
@@ -43,6 +45,10 @@ export class IncidentsAPI {
   public async getUnresolved(): Promise<string> {
     const endpoint = "incidents/unresolved";
     const incidentsJson = await this.apiClient.get(endpoint);
+
+    if (helper.isEmpty(incidentsJson)) {
+      return '`No unresolved incident!`';
+    }
     return helper.slackOutList(incidentsJson);
   }
 
@@ -66,13 +72,11 @@ export class IncidentsAPI {
 
 
   public async updateIncident(incidentId: string, status: string): Promise<string> {
+    const endpoint = `incidents/${incidentId}`;
+    var dataString = qs.stringify({
+      'incident[status]': status
+    });
     try {
-      const endpoint = `incidents/${incidentId}`;
-
-      var dataString = qs.stringify({
-        'incident[status]': status
-      });
-
       const incidentsJson = await this.apiClient.put(endpoint, dataString);
       return helper.slackOut(incidentsJson);
     }
@@ -82,5 +86,11 @@ export class IncidentsAPI {
       errorString = "Error: Update the incident (investigating -> identified -> monitoring -> resolved)";
       return slackCodeBlock + errorString + slackCodeBlock;
     }
+  }
+
+  public async getTemplates(): Promise<string> {
+    const endpoint = 'incident_templates';
+    const incidentsJson = await this.apiClient.get(endpoint);
+    return helper.slackOutList(incidentsJson);
   }
 }
