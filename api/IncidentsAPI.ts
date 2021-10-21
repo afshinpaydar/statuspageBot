@@ -17,7 +17,7 @@ export class IncidentsAPI {
     const getAll = 'getall: Get list of all incidents\n';
     const getUnresolved = 'getunresolved: Get a list of unresolved incidents\n';
     const createIncident = 'createincident name  body: Create an incident\n';
-    const updateIncident = 'updateincident incidentId status: Update an incident status (identified -> investigating -> monitoring -> resolved)\n';
+    const updateIncident = 'updateincident incidentId status: Update an incident status (investigating -> identified -> monitoring -> resolved)\n';
     const helpMsg = helper.helpMessage(
       getAll         +
       getUnresolved  +
@@ -77,7 +77,10 @@ export class IncidentsAPI {
       return helper.slackOut(incidentsJson);
     }
     catch (error) {
-      return "Error!\nUpdate the incident: investigating OR identified -> monitoring -> resolved"
+      const slackCodeBlock = "`";
+      var errorString = new String();
+      errorString = "Error: Update the incident (investigating -> identified -> monitoring -> resolved)";
+      return slackCodeBlock + errorString + slackCodeBlock;
     }
   }
 }
