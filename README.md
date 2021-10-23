@@ -23,6 +23,12 @@ PAGE_ID=FFFFFFFF
 $ make dev
 ```
 
+## Logs
+
+```
+$ docker logs -f statuspage
+```
+
 ## Clean up
 
 ```sh-session

@@ -6,16 +6,16 @@ help: ## Helpful commands
 
 .DEFAULT_GOAL := help
 
-build: ## Build the docker image in local
+build-dev: ## Build the docker image in local
 	@echo 'build docker image'
-	docker build -t statuspage .
+	docker build -t statuspage -f Dockerfile.dev .
 
-run: ## Spin up the project in local
+run-dev: ## Spin up the project in local
 	@echo 'run the project'
-	docker run -d -p3000:3000 --name statuspage  statuspage
+	docker run -d -p3000:3000 -v `pwd`:/usr/src/app --name statuspage  statuspage
 
 clean: ## Clear docker artifacts from local machine
 	@echo 'clear project containers'
 	docker stop statuspage && docker rm statuspage
 
-dev: build run ## Build and deploy docker image in local machine
+dev: build-dev run-dev ## Build and deploy docker image in local machine
