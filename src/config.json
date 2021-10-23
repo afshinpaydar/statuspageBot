@@ -1,9 +1,9 @@
 {
-  "users": [
+  "allow_users": [
     "U020GLSDS15",
     "U020GLSDS16"
   ],
-  "channels": [
+  "allow_channels": [
     "C02HQHK12L9"
   ]
 }

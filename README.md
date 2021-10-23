@@ -19,6 +19,10 @@ API_KEY=GGGG-RRRRR
 PAGE_ID=FFFFFFFF
 ```
 
+## Allow users/channels Config
+StatuspageBot replies only to Slack members that send message from Channels included in the `config.json`.
+
+
 ```sh-session
 $ make dev
 ```

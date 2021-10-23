@@ -4,13 +4,30 @@ import { KnownEventFromType } from '@slack/bolt';
 export class auth {
 
   static authorize(message: KnownEventFromType<"message">):boolean {
+    const fs = require('fs');
+    const path = require('path');
+    const configFile = fs.readFileSync(path.resolve(__dirname, '../config.json'));
+    const config = JSON.parse(configFile);
+
+    let channelOk = false;
+    let userOk = false;
+
     const userId = JSON.parse(JSON.stringify(message))['user'];
     const channelId = JSON.parse(JSON.stringify(message))['channel'];
-    
-    if (userId === "U020GLSDS15" && channelId === "C02HQHK12L9" ){
-      return true;
+
+    for (let channel of config.allow_channels) {
+      if ( channel === channelId ){
+        channelOk = true;
+      }
     }
-    return false;
+
+    for (let user of config.allow_users) {
+      if ( user === userId ){
+        userOk = true;
+      }
+    }
+
+    return channelOk && userOk;
   }
 
 }
