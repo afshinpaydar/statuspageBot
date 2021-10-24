@@ -68,11 +68,11 @@ app.message("get_templates", async ({ message, say }) => {
 
 app.message("create_incident", async ({ message, say }) => {
   const incidentName = JSON.parse(JSON.stringify(message))['text'].split(' ')[1];
-  const incidentText = JSON.parse(JSON.stringify(message))['text'].split(' ').slice(1).join(' ');
+  const templateId = JSON.parse(JSON.stringify(message))['text'].split(' ')[2];
   try {
       if (auth.authorize(message)) {
         say(await incidentapi.
-          createIncident(incidentName, incidentText));
+          createIncident(incidentName, templateId));
       }
       else {
         say(unauthorizedMsg);

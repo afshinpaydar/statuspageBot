@@ -1,4 +1,3 @@
-
 import { KnownEventFromType } from '@slack/bolt';
 
 export class auth {
@@ -18,12 +17,14 @@ export class auth {
     for (let channel of config.allow_channels) {
       if ( channel === channelId ){
         channelOk = true;
+        break;
       }
     }
 
     for (let user of config.allow_users) {
       if ( user === userId ){
         userOk = true;
+        break;
       }
     }
 

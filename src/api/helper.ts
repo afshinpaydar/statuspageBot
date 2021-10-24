@@ -31,4 +31,20 @@ export class helper {
     }
     return false;
   }
+
+  static templateBody(templateList: AxiosResponse<any>, templateId: string):JSON {
+    var templateString = <JSON> {};
+    for (let template of templateList.data) {
+      if (template.id === templateId){
+        templateString = <JSON><unknown>{
+          'title': template.title,
+          'body': template.body
+        };
+        break;
+      }
+    }
+
+    return templateString
+  }
+
 }

@@ -1,4 +1,4 @@
-import axios, {AxiosInstance, AxiosResponse} from 'axios';
+import {AxiosInstance} from 'axios';
 import { helper } from './helper';
 import qs from 'qs';
 
@@ -16,7 +16,7 @@ export class IncidentsAPI {
   helpMessage() {
     const getAll = '`get_all: Get list of all incidents`\n';
     const getUnresolved = '`get_unresolved: Get a list of unresolved incidents`\n';
-    const createIncident = '`create_incident <Name>  <Body>: Create an incident`\n';
+    const createIncident = '`create_incident <Name>  <TemplateID>: Create an incident`\n';
     const updateIncident = '`update_incident <incidentId> <status>: Update an incident status (investigating -> identified -> monitoring -> resolved)`\n';
     const getTemplates = '`get_templates: Get a list of templates`\n';
     const helpMsg =
@@ -58,12 +58,13 @@ export class IncidentsAPI {
    * incidents status should be one of these values: investigating*, *identified*, *monitoring*
    * *resolved, *scheduled, *in_progress, *verifying or *completed".
    */
-  public async createIncident(name: string, body: string): Promise<string> {
+  public async createIncident(name: string, templateId: string): Promise<string> {
     const endpoint = "incidents";
+    const templateBody = await this.getTemplateBody(templateId);
 
     var dataString = qs.stringify({
       'incident[name]': name,
-      'incident[body]': body
+      'incident[body]': JSON.parse(JSON.stringify(templateBody))['body']
     });
 
     const incidentsJson = await this.apiClient.post(endpoint, dataString);
@@ -93,4 +94,12 @@ export class IncidentsAPI {
     const incidentsJson = await this.apiClient.get(endpoint);
     return helper.slackOutList(incidentsJson);
   }
+
+  public async getTemplateBody(templateId: string): Promise<JSON> {
+    const endpoint = 'incident_templates';
+    const incidentsJson = await this.apiClient.get(endpoint);
+
+    return helper.templateBody(incidentsJson, templateId);
+  }
+
 }
